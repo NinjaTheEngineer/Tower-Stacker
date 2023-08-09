@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4712611297621461763}
   m_Layer: 0
   m_Name: Piece_I
-  m_TagString: Untagged
+  m_TagString: TowerPiece
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,9 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb739568ac875db4b94fdda0ac9e59cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionLayer:
+  settingLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
   rb: {fileID: 4712611297621461763}
   <BlockPrefab>k__BackingField: {fileID: 204812790648242599, guid: cd312d191f689a545ae47b1fc72943f1, type: 3}
   <PieceConfiguration>k__BackingField: {fileID: 11400000, guid: 61b656d4b931dff488c3a944c4b45d20, type: 2}
@@ -66,11 +66,11 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 10
-  m_LinearDrag: 2.5
-  m_AngularDrag: 0.05
+  m_LinearDrag: 1
+  m_AngularDrag: 0.1
   m_GravityScale: 0
   m_Material: {fileID: 6200000, guid: 5c07f5d7ee4418644aea194c87ff7da8, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0

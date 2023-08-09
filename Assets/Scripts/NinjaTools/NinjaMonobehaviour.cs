@@ -40,7 +40,7 @@ public class NinjaMonoBehaviour : MonoBehaviour {
         }
 
     }
-    public void logt(string id=null, string message=null) {
+    public void logt(string id=null, string message=null, bool ignoreDuplicates=false) {
         return;
     }
 }

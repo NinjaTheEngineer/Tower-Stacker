@@ -15,8 +15,7 @@ public class PieceConfigurationDataEditor : Editor {
     private bool gridInitialized = false;
     private Dictionary<Vector2Int, Vector2> selectedBlockPositions = new Dictionary<Vector2Int, Vector2>();
 
-    private void OnEnable()
-    {
+    private void OnEnable() {
         colorProperty = serializedObject.FindProperty("color");
         gridSizeProperty = serializedObject.FindProperty("gridSize");
         pivotPositionProperty = serializedObject.FindProperty("pivotPosition");
@@ -25,16 +24,14 @@ public class PieceConfigurationDataEditor : Editor {
         InitializeGrid();
     }
 
-    public override void OnInspectorGUI()
-    {
+    public override void OnInspectorGUI() {
         serializedObject.Update();
 
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(colorProperty);
         EditorGUILayout.PropertyField(gridSizeProperty);
         EditorGUILayout.PropertyField(pivotPositionProperty);
-        if (EditorGUI.EndChangeCheck())
-        {
+        if (EditorGUI.EndChangeCheck()) {
             gridSize = Mathf.Max(gridSize, 2);
             gridSizeProperty.intValue = gridSize;
             InitializeGrid();
@@ -43,8 +40,7 @@ public class PieceConfigurationDataEditor : Editor {
         DrawBlockPositions();
 
         EditorGUILayout.Space();
-        if (GUILayout.Button("Save"))
-        {
+        if (GUILayout.Button("Save")) {
             SaveToScriptableObject();
         }
 
