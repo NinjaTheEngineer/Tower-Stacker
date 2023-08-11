@@ -4,25 +4,29 @@ using UnityEngine;
 using NinjaTools;
 
 public class PieceController : NinjaMonoBehaviour {
-    [SerializeField] float pieceFallSpeed = 2f;
-    [SerializeField] float pieceMoveSpeed = 5f;
+    [SerializeField] protected float pieceFallSpeed = 2f;
+    [SerializeField] protected float pieceMoveSpeed = 5f;
 
-    Piece controlledPiece; 
-    TouchInputController touchInputController;
+    protected Piece controlledPiece; 
+    protected TouchInputController touchInputController;
 
     public void Start() {
-        touchInputController = TouchInputController.Instance;
         GameManager.OnGameOver += ReleaseControlledPiece;
     }  
     public void SetControlledPiece(Piece piece) {
+        var logId = "SetControllerPiece";
+        logd(logId, "Setting ControlledPiece from "+controlledPiece.logf()+" to "+piece.logf()+" => Initializing Piece", true);
+        touchInputController = TouchInputController.Instance;
         controlledPiece = piece;
-        controlledPiece?.Initialize(); // Safe invocation in case controlledPiece is null
+        controlledPiece?.Initialize(); 
     }
     public void ReleaseControlledPiece() {
         var logId = "ReleaseControlledPiece";
         if(controlledPiece==null) {
+            logw(logId, "No ControlledPiece found => no-op");
             return;
         }
+        logw(logId, "Destroying ControlledPiece="+controlledPiece.logf());
         Destroy(controlledPiece.gameObject);
         controlledPiece = null;
     }
@@ -30,34 +34,42 @@ public class PieceController : NinjaMonoBehaviour {
     private void Update() {
         var logId = "Update";
         if (controlledPiece == null) {
-            Debug.Log("No ControlledPiece assigned => no-op");
+            logd(logId, "No ControlledPiece assigned => no-op", true);
             return;
         }
 
         var pieceState = controlledPiece.CurrentState;
         if (pieceState == Piece.PieceState.Released) {
-            Debug.Log($"Piece={controlledPiece.logf()} is Free => Freeing Controller");
+            logd(logId, "Piece="+controlledPiece.logf()+" is Free => Freeing Controller");
             controlledPiece = null;
             return;
         }
 
-        if (pieceState == Piece.PieceState.Controlled) {
-            logd(logId, $"Piece={controlledPiece.logf()} is being Controlled", true);
+        if (pieceState==Piece.PieceState.Controlled) {
+            logd(logId, "Piece="+controlledPiece.logf()+" is being Controlled", true);
             MovePieceDown();
             MoveHorizontally();
 
-            if (touchInputController.IsTap) {
+            if(touchInputController.IsTap) {
                 RotatePiece(90f);
             }
         }
     }
 
     private void MovePieceDown() {
+        var logId = "MovePieceDown";
+        logd(logId, "Moving Piece Down", true);
         controlledPiece.transform.position += -transform.up * Time.deltaTime * pieceFallSpeed;
     }
 
     private void MoveHorizontally() {
+        var logId = "MoveHorizontally";
+        if(touchInputController==null) {
+            loge(logId, "TouchInputController is null => no-op");
+            return;
+        }
         if (touchInputController.IsDragging) {
+            logd(logId, "Is Dragging! touchInputController="+touchInputController.logf()+" is dragging="+touchInputController?.IsDragging.logf(),true);
             Touch touch = Input.GetTouch(0);
             switch (touch.phase) {
                 case TouchPhase.Moved:
@@ -66,6 +78,8 @@ public class PieceController : NinjaMonoBehaviour {
                     controlledPiece.transform.position += touchDelta * pieceMoveSpeed * Time.deltaTime;
                     break;
             }
+        } else {
+            logd(logId, "NOT Dragging! touchInputController="+touchInputController.logf()+" is dragging="+touchInputController?.IsDragging.logf(),true);
         }
     }
 

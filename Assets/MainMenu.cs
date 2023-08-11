@@ -4,15 +4,10 @@ using UnityEngine;
 using NinjaTools;
 
 public class MainMenu : NinjaMonoBehaviour {
-    [SerializeField] SceneManager sceneManager;
-    void Start() {
-        sceneManager ??= SceneManager.Instance;
-    }
-
     public void OnCasualButtonClick() {
-        if(sceneManager==null) {
-            return;
-        }
-        sceneManager.OpenScene(SceneName.Casual);
+        SceneManager.Instance.OpenScene(SceneName.Casual);
+    }
+    public void OnAIButtonClick() {
+        SceneManager.Instance.OpenScene(SceneName.AI);
     }
 }

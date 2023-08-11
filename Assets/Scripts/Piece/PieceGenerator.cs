@@ -9,24 +9,52 @@ public class PieceGenerator : NinjaMonoBehaviour {
     [SerializeField] PieceController pieceController;
     [SerializeField] float pieceScale = 0.35f;
     [SerializeField] float initHeight = 10;
+    float initX;
     Piece lastGeneratedPiece;
+    List<Piece> generatedPieces = new List<Piece>();
     private void Awake() {
-        var logId = "Awake";
-        if(pieceController==null) {
-            pieceController = FindObjectOfType<PieceController>();
-            if(pieceController==null) {
-                loge(logId, "No PieceController in the scene! No-op");
-                Destroy(gameObject);
-            }
-        }
         if(towerHeightChecker==null) {
             towerHeightChecker = FindObjectOfType<TowerHeightManager>();
         }
+        Piece.OnOutOfBounds += OnPieceOutOfBounds;
+        GameManager.OnGameOver += StopGenerationn;
+        GameManager.OnGameStart += Initialize;
+    }
+    public void SetPieceController(PieceController pc) {
+        var logId = "SetPieceController";
+        pieceController = pc;
+        if(pieceController==null) {
+            loge(logId, "No PieceController in the scene! No-op");
+            Destroy(gameObject);
+            return;
+        }
     }
     public void Initialize() {
+        var logId = "Initialize";
+        logd(logId, "Initializing PieceGenerator");
+        DestroyGeneratedPieces();
         GenerateRandomPiece();
+        initX = transform.position.x;
         StartCoroutine(AdjustHeightRoutine());
-        Piece.OnOutOfBounds += OnPieceOutOfBounds;
+    }
+    public void StopGenerationn() {
+        StopAllCoroutines();
+    }
+    void DestroyGeneratedPieces() {
+        var logId = "Reset";
+        var generatedPiecesCount = generatedPieces.Count;
+        if(generatedPiecesCount==0) {
+            logd(logId, "No generated pieces found.");
+            return;
+        }
+        for (int i = 0; i < generatedPiecesCount; i++) {
+            var currentPiece = generatedPieces[i];
+            if(currentPiece==null) {
+                continue;
+            }
+            Destroy(generatedPieces[i].gameObject);
+        }
+        logd(logId, "Finished destroying "+generatedPiecesCount+" pieces.");
     }
 
     void OnPieceOutOfBounds(Piece piece) {
@@ -39,9 +67,10 @@ public class PieceGenerator : NinjaMonoBehaviour {
 
     IEnumerator AdjustHeightRoutine() {
         var logId = "AdjustHeightRoutine";
+        logd(logId, "Starting AdjustHeight Routine");
         var waitForSeconds = new WaitForSeconds(0.5f);
         while(true) {
-            transform.position = new Vector2(0, initHeight + towerHeightChecker.CurrentHeight);
+            transform.position = new Vector2(initX, initHeight + towerHeightChecker.RawHeight);
             yield return waitForSeconds;
         }
     }
@@ -69,9 +98,10 @@ public class PieceGenerator : NinjaMonoBehaviour {
             GameObject newBlock = Instantiate(lastGeneratedPiece.BlockPrefab, blockPosition, Quaternion.identity);
             newBlock.transform.parent = lastGeneratedPiece.transform;
         }
-        logd(logId, "Setting Controlled Piece to Piece="+lastGeneratedPiece.logf()+".");
+        logd(logId, "Setting Controlled Piece for PieceController="+pieceController.logf()+" to Piece="+lastGeneratedPiece.logf()+".");
         lastGeneratedPiece.transform.localScale = new Vector2(pieceScale, pieceScale);
         lastGeneratedPiece.OnPieceReleased += OnPieceReleased;
+        generatedPieces.Add(lastGeneratedPiece);
         pieceController.SetControlledPiece(lastGeneratedPiece);
     }
     public void OnPieceReleased() {
@@ -80,5 +110,7 @@ public class PieceGenerator : NinjaMonoBehaviour {
     private void OnDisable() {
         StopAllCoroutines();
         Piece.OnOutOfBounds -= OnPieceOutOfBounds;
+        GameManager.OnGameOver -= StopGenerationn;
+        GameManager.OnGameStart -= Initialize;
     }
 }

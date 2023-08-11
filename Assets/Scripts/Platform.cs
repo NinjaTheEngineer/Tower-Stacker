@@ -11,11 +11,16 @@ public class Platform : NinjaMonoBehaviour {
         initialPosition = transform.position;
         initialRotation = transform.rotation;
         StartCoroutine(HandleStateRoutine());
+        GameManager.OnGameStart += Reset;
+    }
+    void Reset() {
+        
     }
 
     IEnumerator HandleStateRoutine() {
         var logId = "HandleStateRoutine";
         var waitForSeconds = new WaitForSeconds(0.1f);
+        logd(logId, "Starting HandleState Routine");
         while(true) {
             var currentGameState = GameManager.Instance.CurrentState;
             var rbType = rb.bodyType;

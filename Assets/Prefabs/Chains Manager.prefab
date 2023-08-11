@@ -497,7 +497,7 @@ GameObject:
   - component: {fileID: 7379396063706105403}
   - component: {fileID: 7379396063706105402}
   m_Layer: 0
-  m_Name: ChainsManager
+  m_Name: Chains Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

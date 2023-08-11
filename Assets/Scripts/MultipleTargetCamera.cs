@@ -34,15 +34,20 @@ public class MultipleTargetCamera : MonoBehaviour {
         transform.position = Vector3.SmoothDamp(transform.position, newPosition, ref velocity, smoothTime);
     }
     void Zoom() {
-        float newZoom = Mathf.Lerp(maxZoom, minZoom, GetGreatestDistance() / zoomLimiter);
+        float averageDistance = GetAverageDistance();
+        float newZoom = Mathf.Lerp(maxZoom, minZoom, averageDistance / zoomLimiter);
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, newZoom, Time.deltaTime);
     }
-    float GetGreatestDistance() {
-        var bounds = new Bounds(targets[0].position, Vector3.zero);
-        for (int i = 0; i < targets.Count; i++) {
-            bounds.Encapsulate(targets[i].position);
+
+    float GetAverageDistance() {
+        float totalDistance = 0f;
+        for (int i = 0; i < targets.Count - 1; i++) {
+            for (int j = i + 1; j < targets.Count; j++) {
+                totalDistance += Vector3.Distance(targets[i].position, targets[j].position);
+            }
         }
-        return bounds.size.y;
+        float averageDistance = totalDistance / (targets.Count * (targets.Count - 1) * 0.5f);
+        return averageDistance;
     }
     Vector3 GetCenterPoint() {
         var targetsCount = targets.Count;

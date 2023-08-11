@@ -44,6 +44,8 @@ public class Piece : NinjaMonoBehaviour {
     }
 
     public void Initialize(float destroyHeight = -10f) {
+        var logId = "Initialize";
+        logd(logId, "Initializing Piece!");
         this.destroyHeight = destroyHeight;
         PivotPosition = PieceConfiguration.pivotPosition;
         CurrentState = PieceState.Controlled;
@@ -52,7 +54,7 @@ public class Piece : NinjaMonoBehaviour {
     public void ReleasePiece() {
         var logId = "ReleasePiece";
         if(CurrentState==PieceState.Released) {
-            logw(logId, "Piece already released!");
+            logw(logId, "Piece already released!", true);
             return;
         }
         logd(logId, "Releasing Piece!");

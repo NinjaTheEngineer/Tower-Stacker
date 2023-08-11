@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 40
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 00982e3c843300148a99021be4c03dc2, type: 2}
   m_sharedMaterial: {fileID: -7353435099191517599, guid: 00982e3c843300148a99021be4c03dc2, type: 2}
@@ -285,4 +285,6 @@ MonoBehaviour:
   towerLayer:
     serializedVersion: 2
     m_Bits: 64
+  towerWidth: 5
+  raycastDistance: 50
   heightMultiplier: 4

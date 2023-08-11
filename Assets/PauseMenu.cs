@@ -3,42 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using NinjaTools;
 
-public class PauseMenu : NinjaMonoBehaviour
-{
-    public GameObject visu;
-    private RectTransform visuRectTransform;
-    private Vector3 targetPosition;
-    private Vector3 initPosition;
-    public float animationDuration = 2f;
-
-    void Start() {
-        visuRectTransform = visu.GetComponent<RectTransform>();
+public class PauseMenu : MenuController {
+    [SerializeField]GameObject pauseButton;
+    protected override void Initialize() {
+        base.Initialize();
         StartCoroutine(HandleStateRoutine());
-        initPosition = transform.position;
-        visu?.SetActive(false);
-        targetPosition = CalculateTargetPosition();
     }
 
-    private Vector3 CalculateTargetPosition()
-    {
-        RectTransform pauseMenuRectTransform = GetComponent<RectTransform>();
-
-        // Calculate the initial position outside the top part of the screen
-        float yPosition = pauseMenuRectTransform.rect.yMax + visuRectTransform.rect.height;
-
-        return new Vector3(initPosition.x, yPosition, initPosition.z);
-    }
-
-    IEnumerator HandleStateRoutine()
-    {
+    IEnumerator HandleStateRoutine(){
         var logId = "HandleStateRoutine";
-        var waitForSeconds = new WaitForSeconds(0.1f);
+        logd(logId, "HandleStateRoutine Started!");
+        var waitForSeconds = new WaitForSecondsRealtime(0.1f);
         while (true) {
             var currentGameState = GameManager.Instance.CurrentState;
-            var isActive = visu.activeSelf;
-            if (isActive && currentGameState!=GameManager.GameState.Paused) {
+            var isActive = IsActive;
+            if (!isHiding && isActive && currentGameState!=GameManager.GameState.Paused) {
+                pauseButton.SetActive(true);
                 Hide();
             } else if (!isActive && currentGameState==GameManager.GameState.Paused) {
+                pauseButton.SetActive(false);
                 Show();
             }
             logd(logId, "CurrentGameState=" + currentGameState + " ActiveSelf=" + isActive, true);
@@ -46,33 +29,24 @@ public class PauseMenu : NinjaMonoBehaviour
         }
     }
 
-    void Show()
-    {
-        visu?.SetActive(true);
-        StartCoroutine(AnimateVisu(targetPosition, initPosition));
-    }
-
-    void Hide()
-    {
-        visu?.SetActive(false);
-        StartCoroutine(AnimateVisu(initPosition, targetPosition));
-    }
-
-    IEnumerator AnimateVisu(Vector3 start, Vector3 end)
-    {
-        float elapsedTime = 0f;
-        while (elapsedTime < animationDuration) {
-            elapsedTime += Time.fixedDeltaTime;
-            float t = Mathf.Clamp01(elapsedTime / animationDuration);
-            visu.transform.position = Vector3.Lerp(start, end, t);
-            yield return null;
-        }
-        visu.transform.position = end;
-    }
-    public void OnRestartButtonClick()
-    {
+    public void OnRestartButtonClick() {
         var logId = "OnRestartButtonClick";
         logd(logId, "Restart button clicked!");
         GameManager.Instance.RestartGame();
+    }
+    public void OnResumeButtonClick() {
+        var logId = "OnResumeButtonClick";
+        logd(logId, "Resume button clicked!");
+        GameManager.Instance.ResumeGame();
+    }
+    public void OnPauseButtonClick() {
+        var logId = "OnPauseButtonClick";
+        logd(logId, "Pause button clicked!");
+        GameManager.Instance.PauseGame();
+    }
+    public void OnBackButtonClick() {
+        var logId = "OnBackButtonClick";
+        logd(logId, "Back button clicked => Returning to MainMenu");
+        SceneManager.Instance.OpenScene(SceneName.MainMenu);
     }
 }

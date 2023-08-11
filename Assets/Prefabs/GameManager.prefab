@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2823993025851457689
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2823993025851457695}
+  - component: {fileID: 2823993025851457688}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2823993025851457695
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2823993025851457689}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2823993025851457688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2823993025851457689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f12724828cd014240a6b56df53099e7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  multipleTargetCamera: {fileID: 0}
+  pieceGenerator: {fileID: 2992300091042013928, guid: eacb8610354a89241b515a461b2802e0, type: 3}
+  aiController: {fileID: 8007061368984629438, guid: acb845f383ce6c54c9be2589d9175b14, type: 3}
+  pieceController: {fileID: 9188835188576297010, guid: 1d00d13ea19c878439ab3a63078776a0, type: 3}
+  towerHeightManager: {fileID: 3709961192224187268, guid: 1871703f72645a949a04d4fc9580d1a0, type: 3}
+  timeManager: {fileID: 2814969490157818619, guid: b2e7a5cc39a371c429f7b4c46a4e7bdd, type: 3}
+  chainsManager: {fileID: 7379396063706105402, guid: f0485bf79fa4069408981c58643ef33f, type: 3}
+  touchInputController: {fileID: 0}
+  aiDistance: 7.5

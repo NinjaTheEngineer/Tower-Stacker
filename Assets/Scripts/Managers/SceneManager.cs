@@ -38,6 +38,7 @@ public class SceneManager : NinjaMonoBehaviour {
 
     public void RestartScene()  {
         var logId = "RestartScene";
+        logd(logId, "Restarting Scene");
         var activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
         UnityEngine.SceneManagement.SceneManager.LoadScene(activeScene.buildIndex);
     }
