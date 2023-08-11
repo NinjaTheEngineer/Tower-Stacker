@@ -33,6 +33,7 @@ public class Piece : NinjaMonoBehaviour {
         while(CurrentState!=PieceState.OutOfBounds) {
             if (transform.position.y <= destroyHeight) {
                 CurrentState = PieceState.OutOfBounds;
+                AudioManager.Instance.PlayPieceFellSound();
                 OnOutOfBounds?.Invoke(this);
                 logd(logId, "Piece="+this+" is out of bounds! Destroying.");
                 Destroy(gameObject);
@@ -75,6 +76,7 @@ public class Piece : NinjaMonoBehaviour {
         var hitCollisionLayer = (settingLayers & 1<<collision.gameObject.layer) == 1<<collision.gameObject.layer;
         logd(logId, "HitCollision="+hitCollisionLayer+" Piece="+this.logf()+" Trigger Enter With "+collision.gameObject);
         if (hitCollisionLayer) {
+            AudioManager.Instance.PlayPieceCollidedSound();
             ReleasePiece();
         }
     }

@@ -32,21 +32,25 @@ public class PauseMenu : MenuController {
     public void OnRestartButtonClick() {
         var logId = "OnRestartButtonClick";
         logd(logId, "Restart button clicked!");
+        AudioManager.Instance.PlayButtonClick();
         GameManager.Instance.RestartGame();
     }
     public void OnResumeButtonClick() {
         var logId = "OnResumeButtonClick";
         logd(logId, "Resume button clicked!");
+        AudioManager.Instance.PlayButtonClick();
         GameManager.Instance.ResumeGame();
     }
     public void OnPauseButtonClick() {
         var logId = "OnPauseButtonClick";
         logd(logId, "Pause button clicked!");
+        AudioManager.Instance.PlayButtonClick();
         GameManager.Instance.PauseGame();
     }
     public void OnBackButtonClick() {
         var logId = "OnBackButtonClick";
         logd(logId, "Back button clicked => Returning to MainMenu");
+        AudioManager.Instance.PlayButtonClick();
         SceneManager.Instance.OpenScene(SceneName.MainMenu);
     }
 }

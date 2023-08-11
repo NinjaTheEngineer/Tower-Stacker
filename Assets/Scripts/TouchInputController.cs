@@ -35,7 +35,7 @@ public class TouchInputController : NinjaMonoBehaviour {
     public bool IsUITap { 
         get { 
             bool isUITap = CurrentState==TouchState.UITap;
-            CurrentState = TouchState.None;
+            //CurrentState = TouchState.None;
             return isUITap;
         }
     }

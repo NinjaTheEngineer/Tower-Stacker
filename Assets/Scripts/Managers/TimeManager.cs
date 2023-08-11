@@ -14,7 +14,7 @@ public class TimeManager : NinjaMonoBehaviour {
     }
 
     public void StartTimer() {
-        startTime = Time.deltaTime;
+        startTime = Time.time;
         isCounting = true;
         StartCoroutine(ElapseTimeRoutine());
     }
@@ -22,10 +22,10 @@ public class TimeManager : NinjaMonoBehaviour {
         var logId = "ElapseTimeRoutine";
         logd(logId, "Starting ElapseTime Routine");
         var currentState = gameManager.CurrentState;
-        var waitForSeconds = new WaitForSecondsRealtime(0.01f);
+        var waitForSeconds = new WaitForSecondsRealtime(0.1f);
         while(isCounting) {
             if(currentState==GameManager.GameState.Playing) {
-                elapsedTimeInGame = Time.deltaTime - startTime;
+                elapsedTimeInGame = Time.time - startTime;
             } else if(currentState==GameManager.GameState.GameOver || currentState==GameManager.GameState.AIGameOver) {
                 StopTimer();
             }

@@ -11,10 +11,6 @@ public class Platform : NinjaMonoBehaviour {
         initialPosition = transform.position;
         initialRotation = transform.rotation;
         StartCoroutine(HandleStateRoutine());
-        GameManager.OnGameStart += Reset;
-    }
-    void Reset() {
-        
     }
 
     IEnumerator HandleStateRoutine() {
@@ -40,6 +36,7 @@ public class Platform : NinjaMonoBehaviour {
     }
 
     void Release() {
+        AudioManager.Instance.PlayPlatformReleaseSound();
         rb.bodyType = RigidbodyType2D.Dynamic;
     }
 }

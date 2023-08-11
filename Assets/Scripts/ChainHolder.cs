@@ -24,5 +24,6 @@ public class ChainHolder : NinjaMonoBehaviour {
         for (int i = 0; i < numberOfChains; i++) {
             chains[i].gameObject.SetActive(false);
         }
+        AudioManager.Instance.PlayChainBreakSound();
     }
 }

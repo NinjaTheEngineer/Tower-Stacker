@@ -90,6 +90,7 @@ public class PieceController : NinjaMonoBehaviour {
                 rotationPivot.y *= -1;
                 rotationPivot = controlledPiece.transform.TransformPoint(rotationPivot);
                 controlledPiece.transform.RotateAround(rotationPivot, Vector3.forward, angle);
+                AudioManager.Instance.PlayPieceRotateSound();
             }
         }
     }

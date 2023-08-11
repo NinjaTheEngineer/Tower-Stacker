@@ -6,6 +6,7 @@ using TMPro;
 
 public class TowerHeightManager : NinjaMonoBehaviour {
     [SerializeField] TextMeshProUGUI towerHeightText;
+    [SerializeField] TextMeshProUGUI aiTowerHeightText;
     [SerializeField] LayerMask towerLayer;
     [SerializeField] float towerWidth = 5f;
     [SerializeField] float raycastDistance = 50f;
@@ -21,11 +22,9 @@ public class TowerHeightManager : NinjaMonoBehaviour {
         isAIControlled = isAI;
         rawHeight = 0;
         gameManager = GameManager.Instance;
+        towerHeightText.gameObject.SetActive(false);
+        aiTowerHeightText.gameObject.SetActive(false);
         StartCoroutine(CalculateTowerHeightRoutine());
-        if(isAIControlled) {
-            towerHeightText.gameObject.SetActive(false);
-            return;
-        }
         StartCoroutine(HandleTextStateRoutine());
     }
     IEnumerator HandleTextStateRoutine() {
@@ -34,13 +33,17 @@ public class TowerHeightManager : NinjaMonoBehaviour {
         var waitForSeconds = new WaitForSecondsRealtime(0.2f);
         while (true) {
             var currentState = gameManager.CurrentState;
-            var textVisible = towerHeightText.isActiveAndEnabled;
+            var textVisible = towerHeightText.isActiveAndEnabled || aiTowerHeightText.isActiveAndEnabled;
             var isPlaying = currentState==GameManager.GameState.Playing || currentState==GameManager.GameState.CheckingWinCondition;
-            towerHeightText.text = Mathf.RoundToInt(rawHeight * heightMultiplier).ToString();
+            var heightScore = Mathf.RoundToInt(rawHeight * heightMultiplier).ToString();
+            towerHeightText.text = heightScore;
+            aiTowerHeightText.text = heightScore;
             if(isPlaying && !textVisible) {
-                towerHeightText.gameObject.SetActive(true);
+                towerHeightText.gameObject.SetActive(!isAIControlled && true);
+                aiTowerHeightText.gameObject.SetActive(isAIControlled && true);
             } else if(!isPlaying && textVisible) {
                 towerHeightText.gameObject.SetActive(false);
+                aiTowerHeightText.gameObject.SetActive(false);
             }
             yield return waitForSeconds;
         }
