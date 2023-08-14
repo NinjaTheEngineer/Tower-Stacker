@@ -84,6 +84,7 @@ public class GameManager : NinjaMonoBehaviour {
         yield return waitForSeconds;
         PieceGenerator = Instantiate(pieceGenerator);
         PieceGenerator.SetPieceController(PieceController);
+        PieceGenerator.SetTowerHeightManager(TowerHeightManager);
         yield return waitForSeconds;
         SetUpCameraTargets();
         InitGame();
@@ -115,6 +116,7 @@ public class GameManager : NinjaMonoBehaviour {
         
         AIPieceGenerator = Instantiate(pieceGenerator);
         AIPieceGenerator.SetPieceController(AIController);
+        AIPieceGenerator.SetTowerHeightManager(AITowerHeightManager);
         newPos = new Vector3(aiDistance, pieceGenerator.transform.position.y, pieceGenerator.transform.position.z);
         AIPieceGenerator.transform.position = newPos;
     }
@@ -126,7 +128,7 @@ public class GameManager : NinjaMonoBehaviour {
         PieceGenerator.Initialize();
         ChainsManager?.Initialize();
         InitAI();
-        StartCoroutine(CheckWinConditionRoutine());
+        //StartCoroutine(CheckWinConditionRoutine());
     }
     public void InitAI() {
         var logId = "InitAI";

@@ -15,7 +15,7 @@ public class GameOverMenu : MenuController {
         StartCoroutine(HandleStateRoutine());
     }
 
-    IEnumerator HandleStateRoutine() {
+    protected virtual IEnumerator HandleStateRoutine() {
         var logId = "HandleStateRoutine";
         logd(logId, "HandleStateRoutine Started!");
         var waitForSeconds = new WaitForSeconds(0.1f);
@@ -32,7 +32,7 @@ public class GameOverMenu : MenuController {
             yield return waitForSeconds;
         }
     }
-    void SetMenu() {
+    protected void SetMenu() {
         var logId = "SetMenu";
         logd(logId, "Setting Menu..",true);
         if(heightAmountText) {
@@ -44,9 +44,9 @@ public class GameOverMenu : MenuController {
     }
     protected virtual void SetHeightText() {
         var logId = "SetHeightText";
-        var currentHeight = gameManager.TowerHeightManager.CurrentHeight;
-        logd(logId, "Setting HeightAmount to "+currentHeight);
-        heightAmountText.text = currentHeight.ToString();
+        var highestHeightReached = gameManager.TowerHeightManager.HighestHeightReached;
+        logd(logId, "Setting HeightAmount to "+highestHeightReached);
+        heightAmountText.text = highestHeightReached.ToString();
     }
     void SetTimeText() {
         var logId = "SetTimeText";

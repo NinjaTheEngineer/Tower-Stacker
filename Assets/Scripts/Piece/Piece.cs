@@ -14,6 +14,7 @@ public class Piece : NinjaMonoBehaviour {
     public Action OnPieceReleased;
     public static Action<Piece> OnOutOfBounds;
     public float destroyHeight;
+    public float gravityScale;
 
     public override string ToString() => "{PieceConfiguration=" + PieceConfiguration.logf() + " CurrentState=" + CurrentState.logf() + " DestroyHeight=" + destroyHeight + " PivotPosition=" + PivotPosition + "}";
 
@@ -61,7 +62,7 @@ public class Piece : NinjaMonoBehaviour {
         logd(logId, "Releasing Piece!");
         CurrentState = PieceState.Released;
         rb.isKinematic = false;
-        rb.gravityScale = 1;
+        rb.gravityScale = gravityScale;
         gameObject.layer = LayerMask.NameToLayer("Tower");
         if(transform.childCount > 0) {
             foreach(Transform t in transform) {

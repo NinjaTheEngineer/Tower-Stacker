@@ -4,7 +4,7 @@ using UnityEngine;
 using NinjaTools;
 
 public class PieceGenerator : NinjaMonoBehaviour {
-    [SerializeField] TowerHeightManager towerHeightChecker;
+    [SerializeField] TowerHeightManager towerHeightManager;
     [SerializeField] List<Piece> pieces; 
     [SerializeField] PieceController pieceController;
     [SerializeField] float pieceScale = 0.35f;
@@ -13,13 +13,21 @@ public class PieceGenerator : NinjaMonoBehaviour {
     Piece lastGeneratedPiece;
     List<Piece> generatedPieces = new List<Piece>();
     private void Awake() {
-        if(towerHeightChecker==null) {
-            towerHeightChecker = FindObjectOfType<TowerHeightManager>();
+        if(towerHeightManager==null) {
+            towerHeightManager = FindObjectOfType<TowerHeightManager>();
         }
         Piece.OnOutOfBounds += OnPieceOutOfBounds;
         GameManager.OnGameOver += StopGenerationn;
         GameManager.OnGameStart += Initialize;
     }
+    public void SetTowerHeightManager(TowerHeightManager towerHeightManager) {
+        var logId = "SetTowerHeightManager";
+        if(towerHeightManager==null) {
+            logw(logId, "Tried to set TowerHeightManager to null => no-op");
+            return;
+        }
+        this.towerHeightManager = towerHeightManager;
+    } 
     public void SetPieceController(PieceController pc) {
         var logId = "SetPieceController";
         pieceController = pc;
@@ -70,7 +78,7 @@ public class PieceGenerator : NinjaMonoBehaviour {
         logd(logId, "Starting AdjustHeight Routine");
         var waitForSeconds = new WaitForSeconds(0.5f);
         while(true) {
-            transform.position = new Vector2(initX, initHeight + towerHeightChecker.RawHeight);
+            transform.position = new Vector2(initX, initHeight + towerHeightManager.RawHeight);
             yield return waitForSeconds;
         }
     }

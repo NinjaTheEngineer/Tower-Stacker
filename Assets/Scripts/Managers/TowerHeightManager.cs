@@ -11,10 +11,11 @@ public class TowerHeightManager : NinjaMonoBehaviour {
     [SerializeField] float towerWidth = 5f;
     [SerializeField] float raycastDistance = 50f;
     [SerializeField] float heightMultiplier = 2f;
-    public float TargetHeight { get; private set; }
     float rawHeight;
     public float RawHeight => rawHeight;
     public float CurrentHeight => Mathf.RoundToInt(rawHeight * heightMultiplier);
+    float highestHeightReached;
+    public float HighestHeightReached => Mathf.RoundToInt(highestHeightReached * heightMultiplier);
     GameManager gameManager;
     bool isAIControlled = false;
     public void Initialize(bool isAI=false) {
@@ -26,27 +27,6 @@ public class TowerHeightManager : NinjaMonoBehaviour {
         aiTowerHeightText.gameObject.SetActive(false);
         StartCoroutine(CalculateTowerHeightRoutine());
         StartCoroutine(HandleTextStateRoutine());
-    }
-    IEnumerator HandleTextStateRoutine() {
-        var logId = "HandleTextStateRoutine";
-        logd(logId, "Starting HandleTextState Routine.");
-        var waitForSeconds = new WaitForSecondsRealtime(0.2f);
-        while (true) {
-            var currentState = gameManager.CurrentState;
-            var textVisible = towerHeightText.isActiveAndEnabled || aiTowerHeightText.isActiveAndEnabled;
-            var isPlaying = currentState==GameManager.GameState.Playing || currentState==GameManager.GameState.CheckingWinCondition;
-            var heightScore = Mathf.RoundToInt(rawHeight * heightMultiplier).ToString();
-            towerHeightText.text = heightScore;
-            aiTowerHeightText.text = heightScore;
-            if(isPlaying && !textVisible) {
-                towerHeightText.gameObject.SetActive(!isAIControlled && true);
-                aiTowerHeightText.gameObject.SetActive(isAIControlled && true);
-            } else if(!isPlaying && textVisible) {
-                towerHeightText.gameObject.SetActive(false);
-                aiTowerHeightText.gameObject.SetActive(false);
-            }
-            yield return waitForSeconds;
-        }
     }
     IEnumerator CalculateTowerHeightRoutine() {
         var logId = "CalculateTowerHeightRoutine";
@@ -73,8 +53,31 @@ public class TowerHeightManager : NinjaMonoBehaviour {
                     }
                 }
             }
-
+            if(highestHeightReached<highestHitY) {
+                highestHeightReached = highestHitY;
+            }
             rawHeight = highestHitY;
+        }
+    }
+    IEnumerator HandleTextStateRoutine() {
+        var logId = "HandleTextStateRoutine";
+        logd(logId, "Starting HandleTextState Routine.");
+        var waitForSeconds = new WaitForSecondsRealtime(0.2f);
+        while (true) {
+            var currentState = gameManager.CurrentState;
+            var textVisible = towerHeightText.isActiveAndEnabled || aiTowerHeightText.isActiveAndEnabled;
+            var isPlaying = currentState==GameManager.GameState.Playing || currentState==GameManager.GameState.CheckingWinCondition;
+            var heightScore = Mathf.RoundToInt(highestHeightReached * heightMultiplier).ToString();
+            towerHeightText.text = heightScore;
+            aiTowerHeightText.text = heightScore;
+            if(isPlaying && !textVisible) {
+                towerHeightText.gameObject.SetActive(!isAIControlled && true);
+                aiTowerHeightText.gameObject.SetActive(isAIControlled && true);
+            } else if(!isPlaying && textVisible) {
+                towerHeightText.gameObject.SetActive(false);
+                aiTowerHeightText.gameObject.SetActive(false);
+            }
+            yield return waitForSeconds;
         }
     }
 }
