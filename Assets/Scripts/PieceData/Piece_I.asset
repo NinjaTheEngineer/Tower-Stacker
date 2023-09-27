@@ -12,12 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 600e4a3c5aba2424088be5b3ae519da9, type: 3}
   m_Name: Piece_I
   m_EditorClassIdentifier: 
-  gridSize: 5
-  color: {r: 1, g: 1, b: 1, a: 1}
-  pivotPosition: {x: 0, y: 2}
+  gridSize: 3
+  sprite: {fileID: 21300000, guid: 096492d964db8d64197894219a5ae3fb, type: 3}
+  pivotPosition: {x: 1, y: 1}
   blockPositions:
-  - {x: 0, y: 4}
-  - {x: 0, y: 3}
-  - {x: 0, y: 2}
-  - {x: 0, y: 1}
-  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 1, y: 1}
+  - {x: 1, y: 2}

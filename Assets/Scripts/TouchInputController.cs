@@ -14,7 +14,7 @@ public class TouchInputController : NinjaMonoBehaviour {
         }
     }
     static TouchState _currentState;
-    [field: SerializeField] public TouchState CurrentState { 
+    [SerializeField] public TouchState CurrentState { 
         get => _currentState;
         private set {
             var logId = "CurrentState_set";
@@ -73,6 +73,11 @@ public class TouchInputController : NinjaMonoBehaviour {
                     break;
             }
         }
+#if UNITY_EDITOR
+    if(Input.GetMouseButtonDown(0)) {
+            CurrentState = TouchState.Tap;
+        }
+#endif
     }
     private bool IsPointerOverUIObject(Vector2 screenPosition) {
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);

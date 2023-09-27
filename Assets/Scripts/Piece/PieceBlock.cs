@@ -8,7 +8,7 @@ public class PieceBlock : NinjaMonoBehaviour {
     [SerializeField] SpriteRenderer spriteRenderer;
     void Start() {
         parentPiece = GetComponentInParent<Piece>();
-        spriteRenderer.color = parentPiece.PieceConfiguration.color;
+        spriteRenderer.sprite = parentPiece.PieceConfiguration.sprite;
     }
 
 }

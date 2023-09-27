@@ -50,6 +50,7 @@ MonoBehaviour:
     m_Bits: 192
   rb: {fileID: 0}
   <BlockPrefab>k__BackingField: {fileID: 204812790648242599, guid: cd312d191f689a545ae47b1fc72943f1, type: 3}
+  <GhostPrefab>k__BackingField: {fileID: 1499010485258748, guid: b3779b6beecfaf94e921f6b7527bf9be, type: 3}
   <PieceConfiguration>k__BackingField: {fileID: 11400000, guid: 6deeb1b7d2c43ce49a9b3575572c6af1, type: 2}
   <PivotPosition>k__BackingField: {x: 0, y: 0}
   destroyHeight: -10

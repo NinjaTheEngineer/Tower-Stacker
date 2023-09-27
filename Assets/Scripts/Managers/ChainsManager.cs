@@ -6,6 +6,7 @@ using NinjaTools;
 public class ChainsManager : NinjaMonoBehaviour {
     [SerializeField] List<ChainHolder> chainHolders;
     int chainsRemaining;
+    bool active = false;
     private void Start() {
         Piece.OnOutOfBounds += OnPieceOutOfBounds;
         Initialize();
@@ -16,6 +17,7 @@ public class ChainsManager : NinjaMonoBehaviour {
         for (int i = 0; i < chainsRemaining; i++) {
             chainHolders[i].EnableChains();
         }
+        active = true;
     }
 
     void OnPieceOutOfBounds(Piece piece) {
@@ -25,8 +27,9 @@ public class ChainsManager : NinjaMonoBehaviour {
             chainsRemaining--;
             chainHolders[chainsRemaining].DisableChains();
         }
-        if(chainsRemaining<=0) {
+        if(active && chainsRemaining <= 0) {
             GameManager.Instance.GameOver();
+            active = false;
         }
     }
     

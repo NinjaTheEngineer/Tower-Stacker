@@ -29,6 +29,11 @@ public class GameManager : NinjaMonoBehaviour {
     [SerializeField] ChainsManager chainsManager;
 
     [SerializeField] TouchInputController touchInputController;
+    public static Action OnGameStart;
+    public static Action OnGameOver;
+    public static Action OnGamePaused;
+    public float goalHeight = 40;
+    public float aiDistance;
 
     public enum GameState { Initializing, Playing, CheckingWinCondition, Paused, GameOver, AIGameOver };
     GameState _currentState;
@@ -40,11 +45,6 @@ public class GameManager : NinjaMonoBehaviour {
             _currentState = value;
         }
     }
-    public static Action OnGameStart;
-    public static Action OnGameOver;
-    public static Action OnGamePaused;
-    public float goalHeight = 40;
-    public float aiDistance;
     public static GameManager Instance {get; private set;}
     private void Awake() {
         if(Instance==null) {
@@ -163,7 +163,11 @@ public class GameManager : NinjaMonoBehaviour {
         }
     }
     public void GameOver() {
+        var logId = "GameOver";
         CurrentState = GameState.GameOver;
+        int highestScoreReached = TowerHeightManager.HighestHeightReached;
+        logd(logId, "Adding HighestScoreReached = " + highestScoreReached);
+        HighscoreManager.Instance.Highscore = highestScoreReached;
         OnGameOver?.Invoke();
     }
     public void AIGameOver() {
@@ -199,6 +203,7 @@ public class GameManager : NinjaMonoBehaviour {
     public void RestartGame() {
         var logId = "RestartGame";
         logd(logId, "Restarting Game...");
+        OnGameOver?.Invoke();
         StopAllCoroutines();
         InitGame();
     }

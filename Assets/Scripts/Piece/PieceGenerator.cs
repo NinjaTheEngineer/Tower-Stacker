@@ -7,15 +7,19 @@ public class PieceGenerator : NinjaMonoBehaviour {
     [SerializeField] TowerHeightManager towerHeightManager;
     [SerializeField] List<Piece> pieces; 
     [SerializeField] PieceController pieceController;
+    NextPieceIndicator nextPieceIndicator;
     [SerializeField] float pieceScale = 0.35f;
     [SerializeField] float initHeight = 10;
+    [SerializeField] float pieceDestroyHeight = -2f;
     float initX;
-    Piece lastGeneratedPiece;
+    Piece currentPiece;
     List<Piece> generatedPieces = new List<Piece>();
     private void Awake() {
         if(towerHeightManager==null) {
             towerHeightManager = FindObjectOfType<TowerHeightManager>();
         }
+        nextPieceIndicator = FindObjectOfType<NextPieceIndicator>();
+        logd("Awake", "NextPieceIndicator=" + nextPieceIndicator.logf());
         Piece.OnOutOfBounds += OnPieceOutOfBounds;
         GameManager.OnGameOver += StopGenerationn;
         GameManager.OnGameStart += Initialize;
@@ -41,11 +45,76 @@ public class PieceGenerator : NinjaMonoBehaviour {
         var logId = "Initialize";
         logd(logId, "Initializing PieceGenerator");
         DestroyGeneratedPieces();
+        StartCoroutine(GeneratePieceRoutine());
         GenerateRandomPiece();
         initX = transform.position.x;
         StartCoroutine(AdjustHeightRoutine());
     }
+    bool isGenerating;
+    IEnumerator GeneratePieceRoutine() {
+        var logId = "GeneratePieceRoutine";
+        var waitForSeconds = new WaitForSeconds(0.15f);
+        var waitForSecondsLong = new WaitForSeconds(2f);
+        int currentPieceIndex = -1;
+        int nextPieceIndex = -1;
+        bool duplicatedPieces = false;
+        isGenerating = true;
+        while (isGenerating) {
+            if(currentPiece!=null && currentPiece.CurrentState==Piece.PieceState.Controlled) {
+                logd(logId, "CurrentPiece=" + currentPiece.logf() + " PieceState=" + (currentPiece == null ? "NULL" : currentPiece.CurrentState), true);
+                yield return waitForSeconds;
+                continue;
+            }
+
+            var piecesCount = pieces.Count;
+            logd(logId, "Starting to generate new piece!");
+            if (piecesCount == 0) {
+                logw(logId, "No pieces => no-op");
+                yield break;
+            }
+
+            Vector2 pivotPosition = transform.position;
+            currentPieceIndex = currentPieceIndex==-1?Random.Range(0, piecesCount):nextPieceIndex;
+            while(duplicatedPieces && currentPieceIndex==nextPieceIndex) {
+                logd(logId, "Restraining duplicated pieces from new duplication case.");
+                currentPieceIndex = Random.Range(0, piecesCount);
+            }
+
+            yield return null;
+            
+            nextPieceIndex = Random.Range(0, piecesCount);
+            duplicatedPieces = currentPieceIndex == nextPieceIndex;
+            if (currentPiece) {
+                currentPiece.OnPieceReleased -= OnPieceReleased;
+            }
+            nextPieceIndicator.SetNextPiece(pieces[nextPieceIndex]);
+            currentPiece = Instantiate(pieces[currentPieceIndex], pivotPosition, Quaternion.identity);
+
+            logd(logId, "Generating CurrentPiece="+currentPiece.logf()+" with index="+currentPieceIndex+" while nextIndex="+nextPieceIndex);
+            var pieceBlockPositions = currentPiece.PieceConfiguration.blockPositions;
+
+            currentPiece.InstantiateGhost();
+
+
+
+            List<GameObject> pieceBlocks = new List<GameObject>();
+            foreach (var position in pieceBlockPositions) {
+                Vector2 blockPosition = pivotPosition + new Vector2(position.x, -position.y);
+                GameObject newBlock = Instantiate(currentPiece.BlockPrefab, blockPosition, Quaternion.identity);
+                pieceBlocks.Add(newBlock);
+                newBlock.transform.parent = currentPiece.transform;
+            }
+            logd(logId, "Setting Controlled Piece for PieceController=" + pieceController.logf() + " to Piece=" + currentPiece.logf() + ".");
+            currentPiece.transform.localScale = new Vector2(pieceScale, pieceScale);
+            currentPiece.OnPieceReleased += OnPieceReleased;
+            generatedPieces.Add(currentPiece);
+            pieceController.SetControlledPiece(currentPiece, pieceBlocks);
+            yield return waitForSecondsLong;
+        }
+    }
+
     public void StopGenerationn() {
+        isGenerating = false;
         StopAllCoroutines();
     }
     void DestroyGeneratedPieces() {
@@ -68,7 +137,7 @@ public class PieceGenerator : NinjaMonoBehaviour {
     void OnPieceOutOfBounds(Piece piece) {
         var logId = "OnPieceOutOfBounds";
         logd(logId, "Piece="+piece);
-        if(piece==lastGeneratedPiece && piece.CurrentState==Piece.PieceState.Controlled) {
+        if(piece==currentPiece && piece.CurrentState==Piece.PieceState.Controlled) {
             GenerateRandomPiece();
         }
     }
@@ -83,35 +152,43 @@ public class PieceGenerator : NinjaMonoBehaviour {
         }
     }
     public void GenerateRandomPiece() {
+        return;
         var logId = "GenerateRandomPiece";
         var piecesCount = pieces.Count;
         
-        if(piecesCount==0) {
+        logd(logId, "Starting to generate new piece!");
+        if (piecesCount==0) {
             logw(logId, "No pieces => no-op");
             return;
         }
-
         int randomPieceIndex = Random.Range(0, piecesCount);
         Vector2 pivotPosition = transform.position;
-        if(lastGeneratedPiece) {
-            lastGeneratedPiece.OnPieceReleased -= OnPieceReleased;
+        if(currentPiece) {
+            currentPiece.OnPieceReleased -= OnPieceReleased;
         }
-        lastGeneratedPiece = Instantiate(pieces[randomPieceIndex], pivotPosition, Quaternion.identity);
+        currentPiece = Instantiate(pieces[randomPieceIndex], pivotPosition, Quaternion.identity);
 
-        logd(logId, "Generating LastGeneratedPiece="+lastGeneratedPiece.logf()+" with index="+randomPieceIndex);
-        var pieceBlockPositions = lastGeneratedPiece.PieceConfiguration.blockPositions;
+        logd(logId, "Generating LastGeneratedPiece="+currentPiece.logf()+" with index="+randomPieceIndex);
+        var pieceBlockPositions = currentPiece.PieceConfiguration.blockPositions;
 
+        currentPiece.InstantiateGhost();
+
+        List<GameObject> pieceBlocks = new List<GameObject>();
         foreach (var position in pieceBlockPositions) {
             Vector2 blockPosition = pivotPosition + new Vector2(position.x, -position.y);
-            GameObject newBlock = Instantiate(lastGeneratedPiece.BlockPrefab, blockPosition, Quaternion.identity);
-            newBlock.transform.parent = lastGeneratedPiece.transform;
+            GameObject newBlock = Instantiate(currentPiece.BlockPrefab, blockPosition, Quaternion.identity);
+            pieceBlocks.Add(newBlock);
+            newBlock.transform.parent = currentPiece.transform;
         }
-        logd(logId, "Setting Controlled Piece for PieceController="+pieceController.logf()+" to Piece="+lastGeneratedPiece.logf()+".");
-        lastGeneratedPiece.transform.localScale = new Vector2(pieceScale, pieceScale);
-        lastGeneratedPiece.OnPieceReleased += OnPieceReleased;
-        generatedPieces.Add(lastGeneratedPiece);
-        pieceController.SetControlledPiece(lastGeneratedPiece);
+        logd(logId, "Setting Controlled Piece for PieceController="+pieceController.logf()+" to Piece="+currentPiece.logf()+".");
+        currentPiece.transform.localScale = new Vector2(pieceScale, pieceScale);
+        currentPiece.OnPieceReleased += OnPieceReleased;
+        generatedPieces.Add(currentPiece);
+        pieceController.SetControlledPiece(currentPiece, pieceBlocks);
     }
+    public List<GameObject> ghostBlocks;
+    GameObject ghost;
+    
     public void OnPieceReleased() {
         GenerateRandomPiece();
     }

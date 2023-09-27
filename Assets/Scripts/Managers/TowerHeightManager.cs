@@ -13,9 +13,9 @@ public class TowerHeightManager : NinjaMonoBehaviour {
     [SerializeField] float heightMultiplier = 2f;
     float rawHeight;
     public float RawHeight => rawHeight;
-    public float CurrentHeight => Mathf.RoundToInt(rawHeight * heightMultiplier);
+    public int CurrentHeight => Mathf.RoundToInt(rawHeight * heightMultiplier);
     float highestHeightReached;
-    public float HighestHeightReached => Mathf.RoundToInt(highestHeightReached * heightMultiplier);
+    public int HighestHeightReached => Mathf.RoundToInt(highestHeightReached * heightMultiplier);
     GameManager gameManager;
     bool isAIControlled = false;
     public void Initialize(bool isAI=false) {

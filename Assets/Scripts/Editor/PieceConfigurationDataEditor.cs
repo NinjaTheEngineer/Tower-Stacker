@@ -6,7 +6,7 @@ using NinjaTools;
 
 [CustomEditor(typeof(PieceConfigurationData))]
 public class PieceConfigurationDataEditor : Editor {
-    private SerializedProperty colorProperty;
+    private SerializedProperty spriteProperty;
     private SerializedProperty gridSizeProperty;
     private SerializedProperty pivotPositionProperty;
     private SerializedProperty blockPositionsProperty;
@@ -16,7 +16,7 @@ public class PieceConfigurationDataEditor : Editor {
     private Dictionary<Vector2Int, Vector2> selectedBlockPositions = new Dictionary<Vector2Int, Vector2>();
 
     private void OnEnable() {
-        colorProperty = serializedObject.FindProperty("color");
+        spriteProperty = serializedObject.FindProperty("sprite");
         gridSizeProperty = serializedObject.FindProperty("gridSize");
         pivotPositionProperty = serializedObject.FindProperty("pivotPosition");
         blockPositionsProperty = serializedObject.FindProperty("blockPositions");
@@ -28,7 +28,7 @@ public class PieceConfigurationDataEditor : Editor {
         serializedObject.Update();
 
         EditorGUI.BeginChangeCheck();
-        EditorGUILayout.PropertyField(colorProperty);
+        EditorGUILayout.PropertyField(spriteProperty);
         EditorGUILayout.PropertyField(gridSizeProperty);
         EditorGUILayout.PropertyField(pivotPositionProperty);
         if (EditorGUI.EndChangeCheck()) {

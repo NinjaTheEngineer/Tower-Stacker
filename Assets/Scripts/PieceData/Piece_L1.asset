@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Piece_L1
   m_EditorClassIdentifier: 
   gridSize: 3
-  color: {r: 0, g: 1, b: 0.14202738, a: 1}
-  pivotPosition: {x: 2, y: 1}
+  sprite: {fileID: 21300000, guid: 9964fb8242f3efd458bd302c77013573, type: 3}
+  pivotPosition: {x: 1, y: 1}
   blockPositions:
-  - {x: 2, y: 0}
-  - {x: 2, y: 1}
-  - {x: 2, y: 2}
+  - {x: 1, y: 1}
+  - {x: 0, y: 2}
   - {x: 1, y: 2}
+  - {x: 1, y: 0}
