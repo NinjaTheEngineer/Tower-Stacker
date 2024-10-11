@@ -55,7 +55,9 @@ public class GPGSManager : NinjaMonoBehaviour {
         } else {
             Destroy(gameObject);
         }
+#if UNITY_ANDROID
         PlayGamesPlatform.Activate();
+#endif
         text.gameObject.SetActive(false);
     }
 
@@ -70,7 +72,9 @@ public class GPGSManager : NinjaMonoBehaviour {
             logd(logId, "Not authenticated => no-op");
             return;
         }
+#if UNITY_ANDROID
         PlayGamesPlatform.Instance.ShowLeaderboardUI(highScoreLeaderboardId);
+#endif
     }
     void ProcessAuthentication(bool success) {
         var logId = "ProcessAuthentication";
@@ -92,6 +96,7 @@ public class GPGSManager : NinjaMonoBehaviour {
     }
     //Fetch the Token / Auth code
     public Task LoginGooglePlayGames() {
+#if UNITY_ANDROID
         var tcs = new TaskCompletionSource<object>();
         string authenticationText = "";
         PlayGamesPlatform.Instance.Authenticate((success) => {
@@ -114,7 +119,8 @@ public class GPGSManager : NinjaMonoBehaviour {
                 tcs.SetException(new Exception("Failed"));
             }
         });
-//#if UNITY_EDITOR || !UNITY_STANDALONE
+#endif
+        //#if UNITY_EDITOR || !UNITY_STANDALONE
         text.gameObject.SetActive(true);
         text.SetText(authenticationText);
 //#endif
